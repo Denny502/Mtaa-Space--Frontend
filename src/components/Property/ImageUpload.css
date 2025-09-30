@@ -1,0 +1,90 @@
+.image-upload {
+  margin-bottom: 2rem;
+}
+
+.upload-header h4 {
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.upload-header p {
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.image-preview {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  aspect-ratio: 1;
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.remove-image-btn:hover {
+  background: #ff4757;
+  color: white;
+}
+
+.upload-area {
+  border: 2px dashed #667eea;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f8f9fa;
+}
+
+.upload-area:hover {
+  border-color: #5a6fd8;
+  background: #e9ecef;
+}
+
+.upload-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.upload-area p {
+  margin: 0.5rem 0;
+  color: #667eea;
+  font-weight: bold;
+}
+
+.upload-area small {
+  color: #666;
+}
