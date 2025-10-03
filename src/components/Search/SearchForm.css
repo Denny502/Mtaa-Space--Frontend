@@ -1,16 +1,17 @@
 .search-form {
   background: white;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 32px;
+  border-radius: var(--border-radius-large);
+  box-shadow: var(--shadow-heavy);
   max-width: 1000px;
   margin: 0 auto;
+  border: 1px solid var(--border-light);
 }
 
 .search-form-grid {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr auto;
-  gap: 20px;
+  gap: 16px;
   align-items: end;
 }
 
@@ -20,49 +21,65 @@
 }
 
 .form-group label {
-  font-weight: bold;
+  font-weight: 600;
   margin-bottom: 8px;
-  color: #333;
+  color: var(--text-primary);
   font-size: 0.9rem;
 }
 
 .form-input {
-  padding: 12px 15px;
-  border: 2px solid #e1e5e9;
-  border-radius: 8px;
+  padding: 16px 20px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius-large);
   font-size: 1rem;
-  transition: border-color 0.3s ease;
+  transition: all 0.2s ease;
+  background: white;
+  font-family: inherit;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--teal-primary);
+  box-shadow: 0 0 0 2px rgba(0, 128, 128, 0.1);
+}
+
+.form-input::placeholder {
+  color: var(--text-light);
 }
 
 .search-button {
-  background: #667eea;
+  background: var(--teal-primary);
   color: white;
   border: none;
-  padding: 14px 30px;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  font-weight: bold;
+  padding: 16px 32px;
+  border-radius: var(--border-radius-large);
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: all 0.2s ease;
   white-space: nowrap;
+  font-family: inherit;
 }
 
 .search-button:hover {
-  background: #5a6fd8;
+  background: var(--teal-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
 }
 
 @media (max-width: 768px) {
+  .search-form {
+    padding: 24px;
+    margin: 0 20px;
+  }
+
   .search-form-grid {
     grid-template-columns: 1fr;
-    gap: 15px;
+    gap: 16px;
   }
   
   .search-button {
-    margin-top: 10px;
+    margin-top: 8px;
+    width: 100%;
   }
 }

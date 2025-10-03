@@ -29,8 +29,9 @@ export const AuthProvider = ({ children }) => {
     const result = await api.login({ email, password });
     
     if (result.success) {
-      setUser(result.data.user);
-      return { success: true, user: result.data.user };
+      const userData = result.data?.user || result.user;
+      setUser(userData);
+      return { success: true, user: userData };
     } else {
       return { success: false, error: result.error };
     }
@@ -40,8 +41,9 @@ export const AuthProvider = ({ children }) => {
     const result = await api.signup(userData);
     
     if (result.success) {
-      setUser(result.data.user);
-      return { success: true, user: result.data.user };
+      const userData = result.data?.user || result.user;
+      setUser(userData);
+      return { success: true, user: userData };
     } else {
       return { success: false, error: result.error };
     }

@@ -1,60 +1,130 @@
 .home {
-  font-family: 'Arial', sans-serif;
+  font-family: inherit;
 }
 
 .hero-section {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, rgba(0, 128, 128, 0.9) 0%, rgba(0, 160, 160, 0.8) 100%), 
+              url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') center/cover;
   color: white;
-  padding: 100px 20px;
+  padding: 120px 20px;
   text-align: center;
+  position: relative;
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .hero-content h1 {
   font-size: 3.5rem;
-  font-weight: bold;
-  margin-bottom: 30px;
-  line-height: 1.2;
+  font-weight: 700;
+  margin-bottom: 24px;
+  line-height: 1.1;
+  letter-spacing: -1px;
 }
 
 .hero-subtitle {
-  font-size: 1.3rem;
-  max-width: 800px;
+  font-size: 1.25rem;
+  max-width: 600px;
   margin: 0 auto;
-  line-height: 1.6;
-  opacity: 0.9;
+  line-height: 1.5;
+  opacity: 0.95;
+  font-weight: 400;
 }
 
 .search-section {
-  background: #f8f9fa;
+  background: var(--background-white);
   padding: 60px 20px;
-  margin-top: -50px;
+  margin-top: -60px;
   position: relative;
   z-index: 2;
+  border-radius: var(--border-radius-large) var(--border-radius-large) 0 0;
 }
 
 .featured-section {
-  padding: 100px 20px;
-  background: white;
+  padding: 80px 20px;
+  background: var(--background-white);
 }
 
 .section-title {
   font-size: 2.5rem;
   text-align: center;
-  margin-bottom: 20px;
-  color: #333;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+  font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
 .section-subtitle {
   text-align: center;
-  font-size: 1.1rem;
-  color: #666;
+  font-size: 1.125rem;
+  color: var(--text-secondary);
   max-width: 600px;
-  margin: 0 auto 50px;
+  margin: 0 auto 60px;
   line-height: 1.6;
+  font-weight: 400;
+}
+
+.properties-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.benefits-section {
+  padding: 80px 20px;
+  background: var(--background-light);
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+  margin-top: 48px;
+}
+
+.benefit-card {
+  background: white;
+  padding: 32px;
+  border-radius: var(--border-radius);
+  text-align: center;
+  box-shadow: var(--shadow-light);
+  transition: all 0.2s ease;
+  border: 1px solid var(--border-light);
+}
+
+.benefit-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-medium);
+}
+
+.benefit-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  color: var(--teal-primary);
+}
+
+.benefit-card h3 {
+  margin-bottom: 16px;
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+.benefit-card p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 1rem;
 }
 
 .cta-section {
-  background: #2c3e50;
+  background: var(--text-primary);
   color: white;
   padding: 80px 20px;
   text-align: center;
@@ -62,22 +132,48 @@
 
 .cta-title {
   font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 30px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
+}
+
+.cta-subtitle {
+  font-size: 1.25rem;
+  margin-bottom: 32px;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 400;
 }
 
 .cta-button {
-  font-size: 1.2rem;
-  padding: 15px 40px;
+  font-size: 1.125rem;
+  padding: 16px 32px;
+  background: var(--teal-primary);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-large);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cta-button:hover {
+  background: var(--teal-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
 }
 
 @media (max-width: 768px) {
+  .hero-section {
+    padding: 80px 20px;
+    min-height: 60vh;
+  }
+
   .hero-content h1 {
     font-size: 2.5rem;
   }
   
   .hero-subtitle {
-    font-size: 1.1rem;
+    font-size: 1.125rem;
   }
   
   .section-title,
@@ -86,57 +182,25 @@
   }
   
   .search-section {
-    margin-top: -30px;
+    margin-top: -40px;
     padding: 40px 20px;
   }
   
   .featured-section {
     padding: 60px 20px;
   }
-}
-/* Add to Home.css */
-.benefits-section {
-  padding: 80px 20px;
-  background: #f8f9fa;
-}
 
-.benefits-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  margin-top: 3rem;
-}
+  .benefits-section {
+    padding: 60px 20px;
+  }
 
-.benefit-card {
-  background: white;
-  padding: 2rem;
-  border-radius: 10px;
-  text-align: center;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-}
+  .benefits-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
 
-.benefit-card:hover {
-  transform: translateY(-5px);
-}
-
-.benefit-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-
-.benefit-card h3 {
-  margin-bottom: 1rem;
-  color: #333;
-}
-
-.benefit-card p {
-  color: #666;
-  line-height: 1.6;
-}
-
-.cta-subtitle {
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
-  color: rgba(255, 255, 255, 0.9);
+  .properties-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
 }

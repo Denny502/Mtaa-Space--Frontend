@@ -1,220 +1,177 @@
-// Mock API service - replace with real endpoints later
-// const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-
-// Simulate API delay
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+// Real API service - connects to your backend
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 class ApiService {
+  // Helper method for API calls
+  async apiCall(endpoint, options = {}) {
+    const url = `${API_BASE_URL}${endpoint}`;
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+      ...options,
+    };
+
+    // Add auth token if available
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    // Add body if provided
+    if (options.body) {
+      config.body = options.body;
+    }
+
+    try {
+      const response = await fetch(url, config);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || data.message || 'API request failed');
+      }
+
+      return data;
+    } catch (error) {
+      console.error('API Error:', error);
+      throw error;
+    }
+  }
+
   // Properties
   async getProperties(filters = {}) {
-    await delay(500);
+    const queryParams = new URLSearchParams();
+    Object.keys(filters).forEach(key => {
+      if (filters[key]) queryParams.append(key, filters[key]);
+    });
     
-    // Get from localStorage or use mock data
-    const savedProperties = localStorage.getItem('properties');
-    let properties = savedProperties ? JSON.parse(savedProperties) : [];
+    const queryString = queryParams.toString();
+    const endpoint = `/properties${queryString ? `?${queryString}` : ''}`;
     
-    // Apply filters
-    if (filters.location) {
-      properties = properties.filter(p => 
-        p.location.toLowerCase().includes(filters.location.toLowerCase())
-      );
-    }
-    if (filters.bedrooms) {
-      properties = properties.filter(p => p.bedrooms >= parseInt(filters.bedrooms));
-    }
-    if (filters.price) {
-      properties = properties.filter(p => {
-        const priceNum = parseInt(p.price.replace(/[^\d]/g, ''));
-        const filterPrice = parseInt(filters.price);
-        return priceNum <= filterPrice;
-      });
-    }
-    
-    return { success: true, data: properties };
+    return this.apiCall(endpoint);
   }
 
   async getPropertyById(id) {
-    await delay(300);
-    
-    const savedProperties = localStorage.getItem('properties');
-    const properties = savedProperties ? JSON.parse(savedProperties) : [];
-    const property = properties.find(p => p.id === parseInt(id));
-    
-    if (!property) {
-      return { success: false, error: 'Property not found' };
-    }
-    
-    return { success: true, data: property };
+    return this.apiCall(`/properties/${id}`);
   }
 
   async createProperty(propertyData) {
-    await delay(500);
-    
-    const savedProperties = localStorage.getItem('properties');
-    const properties = savedProperties ? JSON.parse(savedProperties) : [];
-    
-    const newProperty = {
-      id: Date.now(),
-      ...propertyData,
-      createdAt: new Date().toISOString(),
-      featured: false
-    };
-    
-    const updatedProperties = [...properties, newProperty];
-    localStorage.setItem('properties', JSON.stringify(updatedProperties));
-    
-    return { success: true, data: newProperty };
+    return this.apiCall('/properties', {
+      method: 'POST',
+      body: JSON.stringify(propertyData),
+    });
   }
 
   async updateProperty(id, propertyData) {
-    await delay(500);
-    
-    const savedProperties = localStorage.getItem('properties');
-    const properties = savedProperties ? JSON.parse(savedProperties) : [];
-    
-    const updatedProperties = properties.map(p => 
-      p.id === parseInt(id) ? { ...p, ...propertyData } : p
-    );
-    
-    localStorage.setItem('properties', JSON.stringify(updatedProperties));
-    const updatedProperty = updatedProperties.find(p => p.id === parseInt(id));
-    
-    return { success: true, data: updatedProperty };
+    return this.apiCall(`/properties/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(propertyData),
+    });
   }
 
   async deleteProperty(id) {
-    await delay(500);
-    
-    const savedProperties = localStorage.getItem('properties');
-    const properties = savedProperties ? JSON.parse(savedProperties) : [];
-    
-    const updatedProperties = properties.filter(p => p.id !== parseInt(id));
-    localStorage.setItem('properties', JSON.stringify(updatedProperties));
-    
-    return { success: true, message: 'Property deleted successfully' };
+    return this.apiCall(`/properties/${id}`, {
+      method: 'DELETE',
+    });
   }
 
-  // Authentication
+  // Authentication - FIXED
   async login(credentials) {
-    await delay(800);
-    
-    // Mock authentication - replace with real auth
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const user = users.find(u => 
-      u.email === credentials.email && u.password === credentials.password
-    );
-    
-    if (user) {
-      const { password, ...userWithoutPassword } = user;
-      const token = 'mock-jwt-token-' + Date.now();
+    const result = await this.apiCall('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+    });
+
+    // Handle backend response format
+    if (result.success) {
+      const token = result.token;
+      const user = result.user;
       
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(userWithoutPassword));
-      
-      return { 
-        success: true, 
-        data: { 
-          token, 
-          user: userWithoutPassword 
-        } 
-      };
+      if (token && user) {
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        
+        // Also return in the expected frontend format
+        return {
+          success: true,
+          data: {
+            token,
+            user
+          }
+        };
+      }
     }
-    
-    return { success: false, error: 'Invalid email or password' };
+
+    return result;
   }
 
   async signup(userData) {
-    await delay(800);
-    
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    
-    // Check if user already exists
-    if (users.find(u => u.email === userData.email)) {
-      return { success: false, error: 'User already exists with this email' };
+    const result = await this.apiCall('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(userData),
+    });
+
+    // Handle backend response format
+    if (result.success) {
+      const token = result.token;
+      const user = result.user;
+      
+      if (token && user) {
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        
+        // Also return in the expected frontend format
+        return {
+          success: true,
+          data: {
+            token,
+            user
+          }
+        };
+      }
     }
-    
-    const newUser = {
-      id: Date.now(),
-      ...userData,
-      createdAt: new Date().toISOString()
-    };
-    
-    const updatedUsers = [...users, newUser];
-    localStorage.setItem('users', JSON.stringify(updatedUsers));
-    
-    const { password, ...userWithoutPassword } = newUser;
-    const token = 'mock-jwt-token-' + Date.now();
-    
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userWithoutPassword));
-    
-    return { 
-      success: true, 
-      data: { 
-        token, 
-        user: userWithoutPassword 
-      } 
-    };
+
+    return result;
+  }
+
+  async getCurrentUser() {
+    return this.apiCall('/auth/me');
+  }
+
+  async logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    return { success: true, message: 'Logged out successfully' };
   }
 
   // Favorites
   async getFavorites() {
-    await delay(300);
-    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-    return { success: true, data: favorites };
+    return this.apiCall('/favorites');
   }
 
   async addFavorite(propertyId) {
-    await delay(300);
-    
-    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-    const properties = JSON.parse(localStorage.getItem('properties') || '[]');
-    const property = properties.find(p => p.id === propertyId);
-    
-    if (!property) {
-      return { success: false, error: 'Property not found' };
-    }
-    
-    if (!favorites.find(f => f.id === propertyId)) {
-      const updatedFavorites = [...favorites, property];
-      localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
-    }
-    
-    return { success: true, data: favorites };
+    return this.apiCall(`/favorites/${propertyId}`, {
+      method: 'POST',
+    });
   }
 
   async removeFavorite(propertyId) {
-    await delay(300);
-    
-    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-    const updatedFavorites = favorites.filter(f => f.id !== propertyId);
-    localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
-    
-    return { success: true, data: updatedFavorites };
+    return this.apiCall(`/favorites/${propertyId}`, {
+      method: 'DELETE',
+    });
   }
 
   // Inquiries
   async sendInquiry(inquiryData) {
-    await delay(500);
-    
-    const inquiries = JSON.parse(localStorage.getItem('inquiries') || '[]');
-    const newInquiry = {
-      id: Date.now(),
-      ...inquiryData,
-      status: 'new',
-      createdAt: new Date().toISOString()
-    };
-    
-    const updatedInquiries = [...inquiries, newInquiry];
-    localStorage.setItem('inquiries', JSON.stringify(updatedInquiries));
-    
-    return { success: true, data: newInquiry };
+    return this.apiCall('/inquiries', {
+      method: 'POST',
+      body: JSON.stringify(inquiryData),
+    });
   }
 
   async getInquiries() {
-    await delay(300);
-    const inquiries = JSON.parse(localStorage.getItem('inquiries') || '[]');
-    return { success: true, data: inquiries };
+    return this.apiCall('/inquiries');
   }
 }
 

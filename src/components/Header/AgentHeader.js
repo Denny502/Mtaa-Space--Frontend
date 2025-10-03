@@ -17,7 +17,7 @@ const Header = ({ onSignupClick }) => {
       <div className="container">
         <div className="header-content">
           <div className="logo">
-            <h1>Rent Homes</h1>
+            <h1>Mtaa Space</h1>
           </div>
           <Navbar />
           <div className="header-actions">

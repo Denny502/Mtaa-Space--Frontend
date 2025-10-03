@@ -11,7 +11,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
-  color: #333;
+  color: #222222;
+  background-color: #ffffff;
 }
 
 code {
@@ -23,6 +24,108 @@ code {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+}
+
+/* Airbnb-style color variables */
+:root {
+  --teal-primary: #008080;
+  --teal-light: #00a0a0;
+  --teal-dark: #006666;
+  --text-primary: #222222;
+  --text-secondary: #717171;
+  --text-light: #b0b0b0;
+  --background-white: #ffffff;
+  --background-light: #f7f7f7;
+  --border-light: #dddddd;
+  --shadow-light: 0 6px 16px rgba(0, 0, 0, 0.12);
+  --shadow-medium: 0 6px 20px rgba(0, 0, 0, 0.15);
+  --shadow-heavy: 0 6px 24px rgba(0, 0, 0, 0.18);
+  --border-radius: 12px;
+  --border-radius-small: 8px;
+  --border-radius-large: 16px;
+}
+
+/* Global button styles */
+.btn {
+  padding: 14px 24px;
+  border: none;
+  border-radius: var(--border-radius-small);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  font-family: inherit;
+}
+
+.btn-primary {
+  background: var(--teal-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--teal-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--teal-primary);
+  color: var(--teal-primary);
+}
+
+.btn-outline:hover {
+  background: var(--teal-primary);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--text-secondary);
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+/* Form elements */
+.form-input {
+  padding: 12px 16px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius-small);
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background: white;
+  font-family: inherit;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--teal-primary);
+  box-shadow: 0 0 0 2px rgba(0, 128, 128, 0.1);
+}
+
+.form-input::placeholder {
+  color: var(--text-light);
+}
+
+/* Card styles */
+.card {
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-medium);
+  transform: translateY(-2px);
 }
 
 .sr-only {

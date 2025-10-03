@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom'; // 👈 ADD THIS
 import './AuthPopup.css';
 
 const SignupPopup = ({ isOpen, onClose, onSwitchToLogin }) => {
   const { signup } = useAuth();
+  const navigate = useNavigate(); // 👈 ADD THIS
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -47,6 +49,13 @@ const SignupPopup = ({ isOpen, onClose, onSwitchToLogin }) => {
         confirmPassword: '',
         userType: 'renter'
       });
+      
+      // 👇 ADD NAVIGATION BASED ON USER TYPE
+      if (formData.userType === 'agent') {
+        navigate('/agent/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } else {
       setError(result.error);
     }

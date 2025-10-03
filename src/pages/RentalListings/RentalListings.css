@@ -1,6 +1,6 @@
 .rental-listings {
   padding: 2rem 0;
-  background: #f8f9fa;
+  background: var(--background-light);
   min-height: 80vh;
 }
 
@@ -11,13 +11,16 @@
 
 .listings-header h1 {
   font-size: 2.5rem;
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
 .listings-header p {
-  font-size: 1.1rem;
-  color: #666;
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  font-weight: 400;
 }
 
 .listings-content {
@@ -34,6 +37,24 @@
 
 .listings-main {
   padding: 1rem 0;
+}
+
+.no-properties {
+  text-align: center;
+  padding: 3rem;
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+}
+
+.no-properties h3 {
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.no-properties p {
+  color: var(--text-secondary);
 }
 
 @media (max-width: 1024px) {

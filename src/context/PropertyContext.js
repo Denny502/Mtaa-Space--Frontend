@@ -16,7 +16,9 @@ export const PropertyProvider = ({ children }) => {
     location: '',
     price: '',
     bedrooms: '',
-    bathrooms: ''
+    type: '',
+    studio: false,
+    bedsitter: false
   });
 
   // Load properties from localStorage on initial load
@@ -25,54 +27,69 @@ export const PropertyProvider = ({ children }) => {
     if (savedProperties) {
       setProperties(JSON.parse(savedProperties));
     } else {
-      // Initialize with sample APARTMENT data only
+      // Initialize with KENYAN property data including Studios and Bedsitters
       const sampleProperties = [
         {
           id: 1,
-          title: "Luxury Downtown Apartment",
-          price: "€2,500/month",
-          location: "Manhattan, New York",
-          bedrooms: 2,
-          bathrooms: 2,
-          area: 1200,
+          title: "Modern Studio Apartment in Westlands",
+          price: 25000,
+          rentPeriod: "monthly",
+          location: "Westlands, Nairobi",
+          bedrooms: 1,
+          bathrooms: 1,
+          area: 400,
           type: "apartment",
-          description: "Stunning luxury apartment in the heart of downtown with panoramic city views, modern amenities, and concierge service. Features hardwood floors, stainless steel appliances, and floor-to-ceiling windows.",
-          amenities: ["Concierge", "Gym", "Pool", "Security", "Parking", "Balcony", "Air Conditioning", "In-unit Laundry"],
+          isStudio: true,
+          isBedsitter: false,
+          description: "Beautiful modern studio apartment in the heart of Westlands. Perfect for young professionals with open layout, kitchenette, and great amenities.",
+          amenities: ["WiFi", "Security", "Water Backup", "Gym", "Swimming Pool", "Parking"],
           agent: {
             id: 1,
-            name: "Sarah Johnson",
-            email: "sarah@apartmentrentals.com",
-            phone: "+1 (555) 123-4567",
-            image: "https://via.placeholder.com/100/667eea/white?text=SJ"
+            name: "Sarah Kimani",
+            email: "sarah@mtaaspace.com",
+            phone: "+254 712 345 678",
+            image: "https://via.placeholder.com/100/667eea/white?text=SK",
+            rating: 4.8,
+            reviews: 34
           },
           images: [
             "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&h=400&fit=crop",
-            "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&h=400&fit=crop",
-            "https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=600&h=400&fit=crop"
+            "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&h=400&fit=crop"
           ],
           featured: true,
           available: true,
-          leaseTerm: "12 months",
-          deposit: "€2,500",
+          hasBalcony: true,
+          hasParking: true,
+          hasSecurity: true,
+          views: 156,
+          saves: 23,
+          daysListed: 5,
+          leaseTerm: "6-12 months",
+          deposit: 25000,
           createdAt: "2024-01-15"
         },
         {
           id: 2,
-          title: "Modern Studio Apartment",
-          price: "€1,200/month",
-          location: "Brooklyn, New York",
+          title: "Cozy Bedsitter in Kilimani",
+          price: 15000,
+          rentPeriod: "monthly",
+          location: "Kilimani, Nairobi",
           bedrooms: 1,
           bathrooms: 1,
-          area: 600,
+          area: 300,
           type: "apartment",
-          description: "Cozy and modern studio apartment in trendy Brooklyn neighborhood. Perfect for young professionals with open layout, updated kitchen, and easy access to public transportation.",
-          amenities: ["Modern Kitchen", "Hardwood Floors", "Public Transport", "Pet Friendly"],
+          isStudio: false,
+          isBedsitter: true,
+          description: "Affordable and cozy bedsitter in Kilimani area. Self-contained unit with kitchen area and all basic amenities included.",
+          amenities: ["WiFi", "Security", "Water Backup", "Furnished", "24/7 Security"],
           agent: {
             id: 2,
-            name: "Mike Thompson",
-            email: "mike@apartmentrentals.com",
-            phone: "+1 (555) 987-6543",
-            image: "https://via.placeholder.com/100/43e97b/white?text=MT"
+            name: "Mike Otieno",
+            email: "mike@mtaaspace.com",
+            phone: "+254 723 456 789",
+            image: "https://via.placeholder.com/100/43e97b/white?text=MO",
+            rating: 4.5,
+            reviews: 28
           },
           images: [
             "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&h=400&fit=crop",
@@ -80,27 +97,38 @@ export const PropertyProvider = ({ children }) => {
           ],
           featured: true,
           available: true,
+          hasBalcony: false,
+          hasParking: false,
+          hasSecurity: true,
+          views: 89,
+          saves: 12,
+          daysListed: 7,
           leaseTerm: "6-12 months",
-          deposit: "€1,200",
+          deposit: 15000,
           createdAt: "2024-01-10"
         },
         {
           id: 3,
-          title: "Spacious 3-Bedroom Apartment",
-          price: "€3,800/month",
-          location: "Queens, New York",
+          title: "Spacious 3-Bedroom Apartment in Kileleshwa",
+          price: 85000,
+          rentPeriod: "monthly",
+          location: "Kileleshwa, Nairobi",
           bedrooms: 3,
           bathrooms: 2,
           area: 1800,
           type: "apartment",
-          description: "Large family-friendly apartment with spacious rooms, updated kitchen, and plenty of storage. Located in a quiet neighborhood with excellent schools and parks nearby.",
-          amenities: ["Family Friendly", "Park View", "Storage", "Dishwasher", "Central AC"],
+          isStudio: false,
+          isBedsitter: false,
+          description: "Luxurious 3-bedroom apartment in premium Kileleshwa neighborhood. Perfect for families with spacious rooms and modern amenities.",
+          amenities: ["WiFi", "Security", "Water Backup", "Gym", "Swimming Pool", "Parking", "Balcony", "DSL Internet"],
           agent: {
             id: 1,
-            name: "Sarah Johnson",
-            email: "sarah@apartmentrentals.com",
-            phone: "+1 (555) 123-4567",
-            image: "https://via.placeholder.com/100/667eea/white?text=SJ"
+            name: "Sarah Kimani",
+            email: "sarah@mtaaspace.com",
+            phone: "+254 712 345 678",
+            image: "https://via.placeholder.com/100/667eea/white?text=SK",
+            rating: 4.8,
+            reviews: 34
           },
           images: [
             "https://images.unsplash.com/photo-1554995207-c18c203602cb?w=600&h=400&fit=crop",
@@ -108,27 +136,38 @@ export const PropertyProvider = ({ children }) => {
           ],
           featured: true,
           available: true,
+          hasBalcony: true,
+          hasParking: true,
+          hasSecurity: true,
+          views: 203,
+          saves: 45,
+          daysListed: 3,
           leaseTerm: "12-24 months",
-          deposit: "€3,800",
+          deposit: 85000,
           createdAt: "2024-01-08"
         },
         {
           id: 4,
-          title: "Penthouse with City Views",
-          price: "€5,500/month",
-          location: "Manhattan, New York",
-          bedrooms: 2,
-          bathrooms: 2,
-          area: 1600,
+          title: "Affordable Studio in South B",
+          price: 18000,
+          rentPeriod: "monthly",
+          location: "South B, Nairobi",
+          bedrooms: 1,
+          bathrooms: 1,
+          area: 350,
           type: "apartment",
-          description: "Luxurious penthouse apartment with breathtaking city views, private terrace, and high-end finishes. Features gourmet kitchen, spa-like bathrooms, and smart home technology.",
-          amenities: ["Penthouse", "Terrace", "City View", "Smart Home", "Gourmet Kitchen", "Concierge"],
+          isStudio: true,
+          isBedsitter: false,
+          description: "Budget-friendly studio apartment in South B. Great location with easy access to town and all necessary amenities.",
+          amenities: ["WiFi", "Security", "Water Backup", "Furnished"],
           agent: {
             id: 3,
-            name: "Emily Davis",
-            email: "emily@apartmentrentals.com",
-            phone: "+1 (555) 456-7890",
-            image: "https://via.placeholder.com/100/ff9a9e/white?text=ED"
+            name: "Emily Wanjiku",
+            email: "emily@mtaaspace.com",
+            phone: "+254 734 567 890",
+            image: "https://via.placeholder.com/100/ff9a9e/white?text=EW",
+            rating: 4.6,
+            reviews: 22
           },
           images: [
             "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&h=400&fit=crop",
@@ -136,27 +175,38 @@ export const PropertyProvider = ({ children }) => {
           ],
           featured: false,
           available: true,
-          leaseTerm: "12 months",
-          deposit: "€5,500",
+          hasBalcony: false,
+          hasParking: false,
+          hasSecurity: true,
+          views: 67,
+          saves: 8,
+          daysListed: 10,
+          leaseTerm: "6 months",
+          deposit: 18000,
           createdAt: "2024-01-05"
         },
         {
           id: 5,
-          title: "Cozy 1-Bedroom Apartment",
-          price: "€1,800/month",
-          location: "Williamsburg, Brooklyn",
+          title: "Modern Bedsitter in Westlands",
+          price: 22000,
+          rentPeriod: "monthly",
+          location: "Westlands, Nairobi",
           bedrooms: 1,
           bathrooms: 1,
-          area: 700,
+          area: 320,
           type: "apartment",
-          description: "Charming one-bedroom apartment in the heart of Williamsburg. Features exposed brick walls, modern appliances, and close proximity to cafes, restaurants, and nightlife.",
-          amenities: ["Exposed Brick", "Modern Appliances", "Trendy Location", "Bike Storage"],
+          isStudio: false,
+          isBedsitter: true,
+          description: "Recently renovated bedsitter in prime Westlands location. Features modern finishes and great security.",
+          amenities: ["WiFi", "Security", "Water Backup", "Modern Kitchen", "Furnished"],
           agent: {
             id: 2,
-            name: "Mike Thompson",
-            email: "mike@apartmentrentals.com",
-            phone: "+1 (555) 987-6543",
-            image: "https://via.placeholder.com/100/43e97b/white?text=MT"
+            name: "Mike Otieno",
+            email: "mike@mtaaspace.com",
+            phone: "+254 723 456 789",
+            image: "https://via.placeholder.com/100/43e97b/white?text=MO",
+            rating: 4.5,
+            reviews: 28
           },
           images: [
             "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=600&h=400&fit=crop",
@@ -164,27 +214,38 @@ export const PropertyProvider = ({ children }) => {
           ],
           featured: false,
           available: true,
+          hasBalcony: true,
+          hasParking: true,
+          hasSecurity: true,
+          views: 94,
+          saves: 15,
+          daysListed: 6,
           leaseTerm: "12 months",
-          deposit: "€1,800",
+          deposit: 22000,
           createdAt: "2024-01-03"
         },
         {
           id: 6,
-          title: "Modern High-Rise Apartment",
-          price: "€4,200/month",
-          location: "Financial District, Manhattan",
-          bedrooms: 2,
-          bathrooms: 2,
-          area: 1400,
+          title: "Luxury Studio in Kilimani",
+          price: 35000,
+          rentPeriod: "monthly",
+          location: "Kilimani, Nairobi",
+          bedrooms: 1,
+          bathrooms: 1,
+          area: 450,
           type: "apartment",
-          description: "Contemporary high-rise apartment with stunning river views, floor-to-ceiling windows, and premium amenities. Building features rooftop terrace, fitness center, and 24/7 security.",
-          amenities: ["High-Rise", "River View", "Rooftop", "Fitness Center", "24/7 Security", "Floor-to-Ceiling Windows"],
+          isStudio: true,
+          isBedsitter: false,
+          description: "High-end studio apartment with premium finishes in Kilimani. Features luxury amenities and great views.",
+          amenities: ["WiFi", "Security", "Water Backup", "Gym", "Pool", "Parking", "Balcony", "Concierge"],
           agent: {
             id: 3,
-            name: "Emily Davis",
-            email: "emily@apartmentrentals.com",
-            phone: "+1 (555) 456-7890",
-            image: "https://via.placeholder.com/100/ff9a9e/white?text=ED"
+            name: "Emily Wanjiku",
+            email: "emily@mtaaspace.com",
+            phone: "+254 734 567 890",
+            image: "https://via.placeholder.com/100/ff9a9e/white?text=EW",
+            rating: 4.6,
+            reviews: 22
           },
           images: [
             "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&h=400&fit=crop",
@@ -192,8 +253,14 @@ export const PropertyProvider = ({ children }) => {
           ],
           featured: true,
           available: true,
-          leaseTerm: "12-18 months",
-          deposit: "€4,200",
+          hasBalcony: true,
+          hasParking: true,
+          hasSecurity: true,
+          views: 178,
+          saves: 32,
+          daysListed: 4,
+          leaseTerm: "12 months",
+          deposit: 35000,
           createdAt: "2024-01-01"
         }
       ];
@@ -217,7 +284,13 @@ export const PropertyProvider = ({ children }) => {
     if (searchFilters.bedrooms && property.bedrooms < parseInt(searchFilters.bedrooms)) {
       return false;
     }
-    if (searchFilters.bathrooms && property.bathrooms < parseInt(searchFilters.bathrooms)) {
+    if (searchFilters.type && property.type !== searchFilters.type) {
+      return false;
+    }
+    if (searchFilters.studio && !property.isStudio) {
+      return false;
+    }
+    if (searchFilters.bedsitter && !property.isBedsitter) {
       return false;
     }
     return true;
@@ -228,9 +301,15 @@ export const PropertyProvider = ({ children }) => {
     const newProperty = {
       id: Date.now(),
       ...propertyData,
-      type: "apartment", // Force apartment type
+      type: propertyData.type || "apartment",
+      isStudio: propertyData.isStudio || false,
+      isBedsitter: propertyData.isBedsitter || false,
       featured: false,
       available: true,
+      rentPeriod: propertyData.rentPeriod || "monthly",
+      views: 0,
+      saves: 0,
+      daysListed: 0,
       createdAt: new Date().toISOString().split('T')[0],
       images: propertyData.images || ["https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&h=400&fit=crop"],
       amenities: propertyData.amenities || []

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom'; // 👈 KEEP THIS
 import './Header.css';
 import Navbar from './Navbar';
 import LoginPopup from '../Auth/LoginPopup';
@@ -7,6 +8,7 @@ import SignupPopup from '../Auth/SignupPopup';
 
 const Header = () => {
   const { user, logout, isAuthenticated } = useAuth();
+  const navigate = useNavigate(); // 👈 KEEP THIS - IT'S BEING USED BELOW
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
@@ -14,6 +16,7 @@ const Header = () => {
   const handleLogout = () => {
     logout();
     setShowUserMenu(false);
+    navigate('/'); // 👈 USING navigate HERE
   };
 
   const handleShowLogin = () => {
@@ -36,13 +39,28 @@ const Header = () => {
     setShowLogin(true);
   };
 
+  // 👇 ADD THESE NAVIGATION HANDLERS
+  const handleFavoritesClick = () => {
+    navigate('/favorites'); // 👈 USING navigate HERE
+    setShowUserMenu(false);
+  };
+
+  const handleDashboardClick = () => {
+    if (user.role === 'agent') {
+      navigate('/agent/dashboard'); // 👈 USING navigate HERE
+    } else {
+      navigate('/dashboard'); // 👈 USING navigate HERE
+    }
+    setShowUserMenu(false);
+  };
+
   return (
     <>
       <header className="header">
         <div className="container">
           <div className="header-content">
             <div className="logo">
-              <h1>Rent Homes</h1>
+              <h1>Mtaa Space</h1>
             </div>
             <Navbar />
             <div className="header-actions">
@@ -59,17 +77,16 @@ const Header = () => {
                       <div className="user-info">
                         <strong>{user.name}</strong>
                         <span>{user.email}</span>
-                        <span>Type: {user.type}</span>
+                        <span>Role: {user.role}</span>
                       </div>
                       <div className="dropdown-actions">
-                        <button onClick={() => window.location.href = '/favorites'}>
+                        {/* 👇 USING THE NAVIGATION HANDLERS */}
+                        <button onClick={handleFavoritesClick}>
                           My Favorites
                         </button>
-                        {user.type === 'agent' && (
-                          <button onClick={() => window.location.href = '/agent'}>
-                            Agent Dashboard
-                          </button>
-                        )}
+                        <button onClick={handleDashboardClick}>
+                          {user.role === 'agent' ? 'Agent Dashboard' : 'My Dashboard'}
+                        </button>
                         <button onClick={handleLogout}>Logout</button>
                       </div>
                     </div>

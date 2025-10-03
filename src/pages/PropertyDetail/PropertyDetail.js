@@ -28,15 +28,24 @@ const PropertyDetail = () => {
   const [contactSuccess, setContactSuccess] = useState(false);
 
   useEffect(() => {
-    const foundProperty = getPropertyById(id);
-    if (foundProperty) {
-      setProperty(foundProperty);
-      setContactFormData(prev => ({
-        ...prev,
-        message: `I'm interested in ${foundProperty.title} at ${foundProperty.location}`
-      }));
-    }
-    setLoading(false);
+    const fetchProperty = async () => {
+      try {
+        const foundProperty = getPropertyById(id);
+        if (foundProperty) {
+          setProperty(foundProperty);
+          setContactFormData(prev => ({
+            ...prev,
+            message: `I'm interested in ${foundProperty.title} at ${foundProperty.location}`
+          }));
+        }
+      } catch (error) {
+        console.error('Error fetching property:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProperty();
   }, [id, getPropertyById]);
 
   useEffect(() => {
@@ -44,7 +53,8 @@ const PropertyDetail = () => {
       setContactFormData(prev => ({
         ...prev,
         name: user.name,
-        email: user.email
+        email: user.email,
+        phone: user.phone || ''
       }));
     }
   }, [user, property]);
@@ -77,6 +87,7 @@ const PropertyDetail = () => {
   const handleFavoriteToggle = () => {
     if (!isAuthenticated) {
       alert('Please sign in to save favorites');
+      navigate('/login');
       return;
     }
 
@@ -90,6 +101,7 @@ const PropertyDetail = () => {
   const handleScheduleTour = () => {
     if (!isAuthenticated) {
       alert('Please sign in to schedule a tour');
+      navigate('/login');
       return;
     }
     setShowContactForm(true);
@@ -99,11 +111,25 @@ const PropertyDetail = () => {
     }));
   };
 
+  const getPropertyTypeDisplay = () => {
+    if (property.isStudio) return 'Studio';
+    if (property.isBedsitter) return 'Bedsitter';
+    return property.type;
+  };
+
+  const getBedroomDisplay = () => {
+    if (property.isStudio || property.isBedsitter) return 'Self-contained';
+    return `${property.bedrooms} ${property.bedrooms === 1 ? 'bedroom' : 'bedrooms'}`;
+  };
+
   if (loading) {
     return (
       <div className="property-detail">
         <div className="container">
-          <div className="loading">Loading property details...</div>
+          <div className="loading">
+            <div className="loading-spinner"></div>
+            <p>Loading property details...</p>
+          </div>
         </div>
       </div>
     );
@@ -145,7 +171,7 @@ const PropertyDetail = () => {
                 src={property.images[activeImageIndex]} 
                 alt={property.title}
                 onError={(e) => {
-                  e.target.src = 'https://via.placeholder.com/600x400/667eea/white?text=Property+Image';
+                  e.target.src = 'https://via.placeholder.com/800x500/667eea/white?text=Property+Image';
                 }}
               />
               <button 
@@ -155,6 +181,11 @@ const PropertyDetail = () => {
               >
                 {favorite ? '❤️' : '🤍'}
               </button>
+              {(property.isStudio || property.isBedsitter) && (
+                <div className="property-type-badge">
+                  {property.isStudio ? 'STUDIO' : 'BEDSITTER'}
+                </div>
+              )}
             </div>
             
             {property.images.length > 1 && (
@@ -165,7 +196,13 @@ const PropertyDetail = () => {
                     className={`thumbnail ${index === activeImageIndex ? 'active' : ''}`}
                     onClick={() => setActiveImageIndex(index)}
                   >
-                    <img src={image} alt={`${property.title} ${index + 1}`} />
+                    <img 
+                      src={image} 
+                      alt={`${property.title} ${index + 1}`}
+                      onError={(e) => {
+                        e.target.src = 'https://via.placeholder.com/100x80/667eea/white?text=Image';
+                      }}
+                    />
                   </button>
                 ))}
               </div>
@@ -177,8 +214,12 @@ const PropertyDetail = () => {
             <div className="property-header">
               <h1>{property.title}</h1>
               <p className="property-location">📍 {property.location}</p>
-              <p className="property-price">{property.price}</p>
-              {property.featured && <span className="featured-badge">Featured</span>}
+              <p className="property-price">KSh {property.price.toLocaleString()}{property.rentPeriod === 'daily' ? '/day' : '/month'}</p>
+              <div className="property-badges">
+                {property.featured && <span className="featured-badge">Featured</span>}
+                {property.isStudio && <span className="studio-badge">Studio</span>}
+                {property.isBedsitter && <span className="bedsitter-badge">Bedsitter</span>}
+              </div>
             </div>
 
             {/* Property Features */}
@@ -186,15 +227,15 @@ const PropertyDetail = () => {
               <div className="feature-card">
                 <span className="feature-icon">🏠</span>
                 <div className="feature-info">
-                  <strong>{property.bedrooms}</strong>
-                  <span>Bedrooms</span>
+                  <strong>{getPropertyTypeDisplay()}</strong>
+                  <span>Property Type</span>
                 </div>
               </div>
               <div className="feature-card">
-                <span className="feature-icon">🚿</span>
+                <span className="feature-icon">🛏️</span>
                 <div className="feature-info">
-                  <strong>{property.bathrooms}</strong>
-                  <span>Bathrooms</span>
+                  <strong>{getBedroomDisplay()}</strong>
+                  <span>Accommodation</span>
                 </div>
               </div>
               <div className="feature-card">
@@ -205,10 +246,10 @@ const PropertyDetail = () => {
                 </div>
               </div>
               <div className="feature-card">
-                <span className="feature-icon">🏡</span>
+                <span className="feature-icon">📍</span>
                 <div className="feature-info">
-                  <strong>{property.type}</strong>
-                  <span>Type</span>
+                  <strong>{property.neighborhood || property.location.split(',')[0]}</strong>
+                  <span>Neighborhood</span>
                 </div>
               </div>
             </div>
@@ -222,11 +263,29 @@ const PropertyDetail = () => {
             {/* Amenities */}
             {property.amenities && property.amenities.length > 0 && (
               <div className="property-amenities">
-                <h3>Amenities</h3>
+                <h3>Amenities & Features</h3>
                 <div className="amenities-list">
                   {property.amenities.map((amenity, index) => (
-                    <span key={index} className="amenity-tag">{amenity}</span>
+                    <span key={index} className="amenity-tag">
+                      {amenity}
+                    </span>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {/* Additional Features for Studios and Bedsitters */}
+            {(property.isStudio || property.isBedsitter) && (
+              <div className="special-features">
+                <h3>Included Features</h3>
+                <div className="features-list">
+                  <div className="feature-item">✅ Self-contained unit</div>
+                  <div className="feature-item">✅ Kitchen area</div>
+                  <div className="feature-item">✅ Sleeping area</div>
+                  <div className="feature-item">✅ Private bathroom</div>
+                  {property.hasBalcony && <div className="feature-item">✅ Balcony</div>}
+                  {property.hasParking && <div className="feature-item">✅ Parking space</div>}
+                  {property.hasSecurity && <div className="feature-item">✅ 24/7 Security</div>}
                 </div>
               </div>
             )}
@@ -236,11 +295,18 @@ const PropertyDetail = () => {
               <div className="agent-info">
                 <h3>Listing Agent</h3>
                 <div className="agent-card">
-                  <img src={property.agent.image} alt={property.agent.name} />
+                  <img 
+                    src={property.agent.image} 
+                    alt={property.agent.name}
+                    onError={(e) => {
+                      e.target.src = 'https://via.placeholder.com/80x80/667eea/white?text=Agent';
+                    }}
+                  />
                   <div className="agent-details">
                     <h4>{property.agent.name}</h4>
                     <p>📧 {property.agent.email}</p>
                     <p>📞 {property.agent.phone}</p>
+                    <p className="agent-rating">⭐ {property.agent.rating || '4.5'} ({(property.agent.reviews || 12)} reviews)</p>
                   </div>
                 </div>
               </div>
@@ -252,20 +318,36 @@ const PropertyDetail = () => {
                 className="btn btn-primary"
                 onClick={() => setShowContactForm(true)}
               >
-                Contact Agent
+                📞 Contact Agent
               </button>
               <button 
                 className="btn btn-secondary"
                 onClick={handleScheduleTour}
               >
-                Schedule Tour
+                🗓️ Schedule Tour
               </button>
               <button 
                 className={`btn btn-outline ${favorite ? 'favorited' : ''}`}
                 onClick={handleFavoriteToggle}
               >
-                {favorite ? 'Remove Favorite' : 'Save Property'}
+                {favorite ? '❤️ Remove Favorite' : '💾 Save Property'}
               </button>
+            </div>
+
+            {/* Property Stats */}
+            <div className="property-stats">
+              <div className="stat-item">
+                <strong>{property.views || 156}</strong>
+                <span>Views</span>
+              </div>
+              <div className="stat-item">
+                <strong>{property.saves || 23}</strong>
+                <span>Saves</span>
+              </div>
+              <div className="stat-item">
+                <strong>{property.daysListed || 5}</strong>
+                <span>Days Listed</span>
+              </div>
             </div>
           </div>
         </div>
@@ -280,6 +362,7 @@ const PropertyDetail = () => {
               <button 
                 className="close-btn"
                 onClick={() => setShowContactForm(false)}
+                disabled={contactLoading}
               >
                 ×
               </button>
@@ -289,6 +372,12 @@ const PropertyDetail = () => {
               <div className="success-message">
                 <h4>✅ Message Sent Successfully!</h4>
                 <p>The agent will contact you shortly.</p>
+                <button 
+                  className="btn btn-primary"
+                  onClick={() => setShowContactForm(false)}
+                >
+                  Close
+                </button>
               </div>
             ) : (
               <form onSubmit={handleContactSubmit} className="contact-form">
@@ -315,12 +404,13 @@ const PropertyDetail = () => {
                 </div>
                 
                 <div className="form-group">
-                  <label>Phone Number</label>
+                  <label>Phone Number *</label>
                   <input
                     type="tel"
                     value={contactFormData.phone}
                     onChange={(e) => setContactFormData({...contactFormData, phone: e.target.value})}
-                    placeholder="+1 (555) 123-4567"
+                    placeholder="+254 7XX XXX XXX"
+                    required
                   />
                 </div>
                 
@@ -331,6 +421,7 @@ const PropertyDetail = () => {
                     onChange={(e) => setContactFormData({...contactFormData, message: e.target.value})}
                     rows="5"
                     required
+                    placeholder="Tell the agent about your interest in this property..."
                   />
                 </div>
                 
@@ -339,6 +430,7 @@ const PropertyDetail = () => {
                     type="button" 
                     className="btn btn-outline"
                     onClick={() => setShowContactForm(false)}
+                    disabled={contactLoading}
                   >
                     Cancel
                   </button>
@@ -347,7 +439,7 @@ const PropertyDetail = () => {
                     className="btn btn-primary"
                     disabled={contactLoading}
                   >
-                    {contactLoading ? 'Sending...' : 'Send Message'}
+                    {contactLoading ? '📤 Sending...' : '📨 Send Message'}
                   </button>
                 </div>
               </form>

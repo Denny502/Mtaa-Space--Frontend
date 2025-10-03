@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom'; // 👈 ADD THIS
 import './AuthPopup.css';
 
 const LoginPopup = ({ isOpen, onClose, onSwitchToSignup }) => {
   const { login } = useAuth();
+  const navigate = useNavigate(); // 👈 ADD THIS
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -20,6 +22,12 @@ const LoginPopup = ({ isOpen, onClose, onSwitchToSignup }) => {
     
     if (result.success) {
       onClose();
+      // 👇 ADD NAVIGATION BASED ON USER ROLE
+      if (result.user.role === 'agent') {
+        navigate('/agent/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } else {
       setError(result.error);
     }

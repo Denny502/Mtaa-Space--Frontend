@@ -13,6 +13,7 @@ import Support from './pages/Support/Support';
 import Location from './pages/Location/Location';
 import AgentDashboard from './pages/AgentDashboard/AgentDashboard';
 import Favorites from './pages/Favorites/Favorites';
+import Dashboard from './pages/Dashboard/Dashboard'; // This will work now
 
 function App() {
   const [isSignupOpen, setIsSignupOpen] = useState(false);
@@ -30,6 +31,8 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/support" element={<Support />} />
           <Route path="/location" element={<Location />} />
+          <Route path="/agent/dashboard" element={<AgentDashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/agent" element={<AgentDashboard />} />
         </Routes>
       </main>

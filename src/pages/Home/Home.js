@@ -64,11 +64,6 @@ const Home = () => {
               <h3>Secure Process</h3>
               <p>Safe and transparent rental process with dedicated support every step of the way.</p>
             </div>
-            <div className="benefit-card">
-              <div className="benefit-icon">💰</div>
-              <h3>No Broker Fees</h3>
-              <p>Many listings with no broker fees - saving you thousands on your new home.</p>
-            </div>
           </div>
         </div>
       </section>
