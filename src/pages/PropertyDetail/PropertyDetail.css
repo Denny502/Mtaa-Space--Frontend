@@ -1,18 +1,18 @@
 .property-detail {
   padding: 2rem 0;
   min-height: 80vh;
-  background: #f8f9fa;
+  background: var(--background-light);
 }
 
 /* Breadcrumb */
 .breadcrumb {
   margin-bottom: 2rem;
   font-size: 0.9rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .breadcrumb a {
-  color: #667eea;
+  color: var(--teal-primary);
   text-decoration: none;
   margin: 0 0.5rem;
 }
@@ -22,7 +22,7 @@
 }
 
 .breadcrumb span {
-  color: #666;
+  color: var(--text-secondary);
   margin-left: 0.5rem;
 }
 
@@ -30,11 +30,12 @@
 .property-detail-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 3rem;
+  gap: 2rem;
   background: white;
-  padding: 2rem;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  border: 1px solid var(--border-light);
 }
 
 /* Images Section */
@@ -46,9 +47,9 @@
 
 .main-image {
   position: relative;
-  border-radius: 10px;
+  border-radius: var(--border-radius);
   overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-light);
 }
 
 .main-image img {
@@ -69,19 +70,20 @@
   background: white;
   border: none;
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  font-size: 1.5rem;
+  width: 44px;
+  height: 44px;
+  font-size: 1.3rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
+  box-shadow: var(--shadow-light);
+  transition: all 0.2s ease;
 }
 
 .favorite-btn:hover {
-  transform: scale(1.1);
+  transform: scale(1.06);
+  box-shadow: var(--shadow-medium);
 }
 
 .favorite-btn.favorited {
@@ -98,11 +100,11 @@
 
 .thumbnail {
   border: none;
-  border-radius: 8px;
+  border-radius: var(--border-radius-small);
   overflow: hidden;
   cursor: pointer;
   opacity: 0.7;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   min-width: 80px;
   height: 60px;
 }
@@ -127,15 +129,16 @@
 }
 
 .property-header h1 {
-  font-size: 2.5rem;
-  color: #333;
-  margin-bottom: 0.5rem;
+  font-size: 2rem;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
   line-height: 1.2;
+  letter-spacing: -0.5px;
 }
 
 .property-location {
-  font-size: 1.2rem;
-  color: #666;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
@@ -143,19 +146,19 @@
 }
 
 .property-price {
-  font-size: 2.5rem;
-  color: #667eea;
-  font-weight: bold;
+  font-size: 2rem;
+  color: var(--teal-primary);
+  font-weight: 700;
   margin-bottom: 1rem;
 }
 
 .featured-badge {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: var(--teal-primary);
   color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--border-radius-large);
   font-size: 0.8rem;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 /* Features Grid */
@@ -163,19 +166,20 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
-  padding: 1.5rem;
-  background: #f8f9fa;
-  border-radius: 10px;
+  padding: 1rem;
+  background: var(--background-light);
+  border-radius: var(--border-radius);
 }
 
 .feature-card {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1rem;
+  padding: 0.75rem 1rem;
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: var(--border-radius-small);
+  box-shadow: var(--shadow-light);
+  border: 1px solid var(--border-light);
 }
 
 .feature-icon {
@@ -188,13 +192,13 @@
 }
 
 .feature-info strong {
-  font-size: 1.5rem;
-  color: #333;
+  font-size: 1.2rem;
+  color: var(--text-primary);
   line-height: 1;
 }
 
 .feature-info span {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
@@ -202,23 +206,23 @@
 .property-description,
 .property-amenities,
 .agent-info {
-  padding: 1.5rem;
-  background: #f8f9fa;
-  border-radius: 10px;
+  padding: 1.25rem;
+  background: var(--background-light);
+  border-radius: var(--border-radius);
 }
 
 .property-description h3,
 .property-amenities h3,
 .agent-info h3 {
-  margin-bottom: 1rem;
-  color: #333;
-  border-bottom: 2px solid #667eea;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--teal-primary);
   padding-bottom: 0.5rem;
 }
 
 .property-description p {
   line-height: 1.6;
-  color: #555;
+  color: var(--text-secondary);
 }
 
 .amenities-list {
@@ -229,11 +233,11 @@
 
 .amenity-tag {
   background: white;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  color: #667eea;
-  border: 1px solid #667eea;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--border-radius-large);
+  font-size: 0.85rem;
+  color: var(--teal-primary);
+  border: 1px solid var(--teal-primary);
 }
 
 /* Agent Info */
@@ -243,7 +247,9 @@
   gap: 1rem;
   padding: 1rem;
   background: white;
-  border-radius: 8px;
+  border-radius: var(--border-radius-small);
+  box-shadow: var(--shadow-light);
+  border: 1px solid var(--border-light);
 }
 
 .agent-card img {
@@ -254,13 +260,13 @@
 }
 
 .agent-details h4 {
-  margin-bottom: 0.5rem;
-  color: #333;
+  margin-bottom: 0.25rem;
+  color: var(--text-primary);
 }
 
 .agent-details p {
-  margin: 0.25rem 0;
-  color: #666;
+  margin: 0.2rem 0;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 

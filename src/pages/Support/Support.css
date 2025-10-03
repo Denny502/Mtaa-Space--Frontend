@@ -1,6 +1,6 @@
 .support {
   padding: 4rem 0;
-  background: #f8f9fa;
+  background: var(--background-light);
   min-height: 80vh;
 }
 
@@ -10,14 +10,15 @@
 }
 
 .support-header h1 {
-  font-size: 3rem;
-  color: #333;
-  margin-bottom: 1rem;
+  font-size: 2.5rem;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+  font-weight: 700;
 }
 
 .support-header p {
-  font-size: 1.2rem;
-  color: #666;
+  font-size: 1.125rem;
+  color: var(--text-secondary);
 }
 
 .support-options {
@@ -30,27 +31,30 @@
 .support-card {
   background: white;
   padding: 2rem;
-  border-radius: 10px;
+  border-radius: var(--border-radius);
   text-align: center;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-light);
+  border: 1px solid var(--border-light);
 }
 
 .support-card h3 {
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
-  color: #333;
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+  font-weight: 700;
 }
 
 .support-card p {
-  color: #666;
+  color: var(--text-secondary);
   margin-bottom: 0.5rem;
 }
 
 .faq-section h2 {
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 2rem;
+  font-size: 1.8rem;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
   text-align: center;
+  font-weight: 700;
 }
 
 .faq-list {
@@ -60,10 +64,11 @@
 
 .faq-item {
   background: white;
-  border-radius: 10px;
+  border-radius: var(--border-radius);
   margin-bottom: 1rem;
   overflow: hidden;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-light);
+  border: 1px solid var(--border-light);
 }
 
 .faq-question {
@@ -73,23 +78,23 @@
   border: none;
   text-align: left;
   font-size: 1.1rem;
-  font-weight: bold;
-  color: #333;
+  font-weight: 700;
+  color: var(--text-primary);
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: background 0.3s ease;
+  transition: background 0.2s ease;
 }
 
 .faq-question:hover {
-  background: #f8f9fa;
+  background: var(--background-light);
 }
 
 .faq-toggle {
   font-size: 1.5rem;
   font-weight: normal;
-  color: #667eea;
+  color: var(--teal-primary);
 }
 
 .faq-answer {
@@ -97,7 +102,7 @@
 }
 
 .faq-answer p {
-  color: #555;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin: 0;
 }

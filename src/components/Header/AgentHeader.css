@@ -1,7 +1,11 @@
 .agent-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 2rem 0;
+  background: var(--background-white);
+  color: var(--text-primary);
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .agent-header-content {
@@ -11,17 +15,36 @@
 }
 
 .agent-info h2 {
-  margin-bottom: 0.5rem;
-  font-size: 2rem;
+  margin-bottom: 0.25rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.3px;
 }
 
 .agent-info p {
-  opacity: 0.9;
+  color: var(--text-secondary);
 }
 
 .agent-actions {
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
+}
+
+.agent-actions .btn {
+  border-radius: var(--border-radius-large);
+  padding: 10px 16px;
+  font-weight: 600;
+}
+
+.agent-actions .btn-outline {
+  border: 1px solid var(--teal-primary);
+  color: var(--teal-primary);
+  background: transparent;
+}
+
+.agent-actions .btn-outline:hover {
+  background: var(--teal-primary);
+  color: #fff;
 }
 
 @media (max-width: 768px) {
@@ -32,6 +55,6 @@
   }
   
   .agent-info h2 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
 }

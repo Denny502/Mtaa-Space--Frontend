@@ -1,6 +1,6 @@
 .location {
   padding: 4rem 0;
-  background: white;
+  background: var(--background-white);
   min-height: 80vh;
 }
 
@@ -10,14 +10,15 @@
 }
 
 .location-header h1 {
-  font-size: 3rem;
-  color: #333;
-  margin-bottom: 1rem;
+  font-size: 2.5rem;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+  font-weight: 700;
 }
 
 .location-header p {
-  font-size: 1.2rem;
-  color: #666;
+  font-size: 1.125rem;
+  color: var(--text-secondary);
 }
 
 .region-card {
@@ -38,26 +39,29 @@
 }
 
 .city-card {
-  background: #f8f9fa;
+  background: var(--background-light);
   padding: 2rem;
-  border-radius: 10px;
+  border-radius: var(--border-radius);
   text-align: center;
-  transition: transform 0.3s ease;
+  transition: transform 0.2s ease;
+  border: 1px solid var(--border-light);
 }
 
 .city-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-light);
 }
 
 .city-card h3 {
-  font-size: 1.3rem;
-  color: #333;
-  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+  font-weight: 700;
 }
 
 .city-card p {
-  color: #666;
-  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
 }
 
 .city-card .btn {
@@ -66,33 +70,34 @@
 }
 
 .location-cta {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--teal-primary);
   color: white;
-  padding: 3rem;
-  border-radius: 15px;
+  padding: 2.5rem;
+  border-radius: var(--border-radius);
   text-align: center;
   margin-top: 4rem;
 }
 
 .location-cta h2 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
 }
 
 .location-cta p {
-  font-size: 1.1rem;
-  margin-bottom: 2rem;
-  opacity: 0.9;
+  font-size: 1.05rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.95;
 }
 
 .location-cta .btn {
   background: white;
-  color: #667eea;
-  font-weight: bold;
+  color: var(--teal-primary);
+  font-weight: 700;
 }
 
 .location-cta .btn:hover {
-  background: #f8f9fa;
+  background: #eefcfc;
 }
 
 @media (max-width: 768px) {

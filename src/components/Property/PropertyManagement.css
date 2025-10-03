@@ -1,13 +1,15 @@
 .property-management {
   padding: 2rem;
   background: white;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  border: 1px solid var(--border-light);
 }
 
 .property-management h2 {
-  margin-bottom: 1.5rem;
-  color: #333;
+  margin-bottom: 1.25rem;
+  color: var(--text-primary);
+  font-weight: 700;
 }
 
 .properties-table {
@@ -27,16 +29,16 @@
 }
 
 .properties-table th {
-  background: #f8f9fa;
-  font-weight: bold;
-  color: #333;
+  background: var(--background-light);
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .status {
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--border-radius-large);
   font-size: 0.8rem;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .status.active {
@@ -50,16 +52,17 @@
 }
 
 .btn-action {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.9rem;
   margin-right: 0.5rem;
   border: none;
-  border-radius: 5px;
+  border-radius: var(--border-radius-small);
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
 .btn-action.edit {
-  background: #17a2b8;
+  background: var(--teal-primary);
   color: white;
 }
 

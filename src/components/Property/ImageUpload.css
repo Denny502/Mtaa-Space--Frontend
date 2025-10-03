@@ -3,13 +3,14 @@
 }
 
 .upload-header h4 {
-  margin-bottom: 0.5rem;
-  color: #333;
+  margin-bottom: 0.25rem;
+  color: var(--text-primary);
+  font-weight: 700;
 }
 
 .upload-header p {
-  color: #666;
-  margin-bottom: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
 }
 
 .images-grid {
@@ -20,10 +21,11 @@
 
 .image-preview {
   position: relative;
-  border-radius: 8px;
+  border-radius: var(--border-radius-small);
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-light);
   aspect-ratio: 1;
+  border: 1px solid var(--border-light);
 }
 
 .image-preview img {
@@ -36,7 +38,7 @@
   position: absolute;
   top: 5px;
   right: 5px;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   border: none;
   border-radius: 50%;
   width: 30px;
@@ -46,32 +48,33 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .remove-image-btn:hover {
   background: #ff4757;
   color: white;
+  transform: scale(1.06);
 }
 
 .upload-area {
-  border: 2px dashed #667eea;
-  border-radius: 8px;
+  border: 2px dashed var(--teal-primary);
+  border-radius: var(--border-radius);
   padding: 2rem;
   text-align: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   aspect-ratio: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #f8f9fa;
+  background: var(--background-light);
 }
 
 .upload-area:hover {
-  border-color: #5a6fd8;
-  background: #e9ecef;
+  border-color: var(--teal-dark);
+  background: #eefcfc;
 }
 
 .upload-icon {
@@ -81,10 +84,10 @@
 
 .upload-area p {
   margin: 0.5rem 0;
-  color: #667eea;
-  font-weight: bold;
+  color: var(--teal-primary);
+  font-weight: 600;
 }
 
 .upload-area small {
-  color: #666;
+  color: var(--text-secondary);
 }
