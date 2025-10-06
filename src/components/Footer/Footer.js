@@ -8,7 +8,7 @@ const Footer = () => {
         <div className="footer-content">
           <div className="footer-section">
             <h3>Mtaa Space</h3>
-            <p>Finding your perfect rental home across United States and Europe.</p>
+            <p>Finding your perfect rental home across Kenya.</p>
           </div>
           <div className="footer-section">
             <h4>Quick Links</h4>

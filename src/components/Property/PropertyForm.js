@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useProperty } from '../../context/PropertyContext';
+import { useAuth } from '../../context/AuthContext';
 import ImageUpload from './ImageUpload';
 import './PropertyForm.css';
 
 const PropertyForm = ({ property = null, onSuccess }) => {
   const { addProperty, updateProperty } = useProperty();
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     title: property?.title || '',
     description: property?.description || '',
@@ -15,7 +17,8 @@ const PropertyForm = ({ property = null, onSuccess }) => {
     area: property?.area || '',
     leaseTerm: property?.leaseTerm || '12 months',
     deposit: property?.deposit || '',
-    amenities: property?.amenities || []
+    amenities: property?.amenities || [],
+    propertyType: property?.propertyType || 'apartment'
   });
   const [images, setImages] = useState(property?.images || []);
   const [loading, setLoading] = useState(false);
@@ -26,48 +29,72 @@ const PropertyForm = ({ property = null, onSuccess }) => {
     setError('');
     setLoading(true);
 
+    console.log('🔄 PropertyForm: Starting form submission');
+    console.log('👤 Current user:', user);
+
     try {
       const propertyData = {
-        ...formData,
-        type: "apartment", // Always apartment
-        images: images.length > 0 ? images : ["https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&h=400&fit=crop"],
+        title: formData.title,
+        description: formData.description,
+        price: formData.price.toString(), // Ensure it's a string
+        location: formData.location,
+        bedrooms: parseInt(formData.bedrooms),
+        bathrooms: parseFloat(formData.bathrooms),
+        area: parseInt(formData.area),
+        type: formData.propertyType,
+        leaseTerm: formData.leaseTerm,
+        deposit: formData.deposit || undefined,
         amenities: Array.isArray(formData.amenities) ? formData.amenities : [],
+        images: images.length > 0 ? images : ["https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&h=400&fit=crop"],
         available: true
       };
 
+      console.log('📦 Final property data being sent:', propertyData);
+
       let result;
       if (property) {
+        console.log('✏️ Updating existing property');
         result = await updateProperty(property.id, propertyData);
       } else {
+        console.log('➕ Adding new property');
         result = await addProperty(propertyData);
       }
 
+      console.log('📨 Result from context:', result);
+
       if (result.success) {
+        console.log('🎉 Property saved successfully!');
         onSuccess?.(result.data);
-        // Reset form if it's a new property
         if (!property) {
-          setFormData({
-            title: '',
-            description: '',
-            price: '',
-            location: '',
-            bedrooms: '',
-            bathrooms: '',
-            area: '',
-            leaseTerm: '12 months',
-            deposit: '',
-            amenities: []
-          });
-          setImages([]);
+          resetForm();
         }
       } else {
+        console.error('❌ Save failed:', result.error);
         setError(result.error || 'Failed to save property');
       }
     } catch (err) {
-      setError('An unexpected error occurred');
+      console.error('❌ Unexpected error:', err);
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      title: '',
+      description: '',
+      price: '',
+      location: '',
+      bedrooms: '',
+      bathrooms: '',
+      area: '',
+      leaseTerm: '12 months',
+      deposit: '',
+      amenities: [],
+      propertyType: 'apartment'
+    });
+    setImages([]);
   };
 
   const handleChange = (e) => {
@@ -89,16 +116,32 @@ const PropertyForm = ({ property = null, onSuccess }) => {
     });
   };
 
-  const apartmentAmenities = [
-    "Concierge", "Gym", "Pool", "Security", "Parking", "Balcony", 
-    "Air Conditioning", "In-unit Laundry", "Dishwasher", "Pet Friendly",
-    "Fitness Center", "Rooftop", "Storage", "Central AC", "Modern Kitchen"
+  const kenyanApartmentAmenities = [
+    "24/7 Security", "Gated Community", "Parking Space", "Balcony", 
+    "Air Conditioning", "Water Backup", "DSL Internet", "Fitness Center",
+    "Swimming Pool", "Elevator", "Concierge", "Pet Friendly",
+    "Serviced", "Furnished", "Near Public Transport", "Power Backup"
+  ];
+
+  const kenyanPropertyTypes = [
+    'apartment', 'house', 'studio', 'bedsitter', 'maisonette', 'townhouse'
+  ];
+
+  const popularNeighborhoods = [
+    "Westlands, Nairobi", "Kilimani, Nairobi", "Kileleshwa, Nairobi", 
+    "Lavington, Nairobi", "Karen, Nairobi", "Nyali, Mombasa",
+    "Bamburi, Mombasa", "Milimani, Nakuru", "Riat Hills, Kisumu"
   ];
 
   return (
     <div className="property-form">
-      <h2>{property ? 'Edit Apartment Listing' : 'List New Apartment'}</h2>
-      {error && <div className="error-message">{error}</div>}
+      <h2>{property ? 'Edit Property Listing' : 'List New Property for Rent'}</h2>
+      
+      {error && (
+        <div className="error-message">
+          <strong>Error:</strong> {error}
+        </div>
+      )}
       
       <form onSubmit={handleSubmit}>
         <ImageUpload 
@@ -108,52 +151,39 @@ const PropertyForm = ({ property = null, onSuccess }) => {
 
         <div className="form-row">
           <div className="form-group">
-            <label>Apartment Title *</label>
+            <label>Property Title *</label>
             <input
               type="text"
               name="title"
               value={formData.title}
               onChange={handleChange}
-              placeholder="Luxury 2-Bedroom Downtown Apartment"
+              placeholder="Spacious 2-Bedroom Apartment in Westlands"
               required
             />
           </div>
           <div className="form-group">
-            <label>Monthly Rent *</label>
+            <label>Monthly Rent (KSh) *</label>
             <input
-              type="text"
+              type="number"
               name="price"
               value={formData.price}
               onChange={handleChange}
-              placeholder="€2,500/month"
+              placeholder="45000"
               required
             />
           </div>
         </div>
-        
-        <div className="form-group">
-          <label>Description *</label>
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            rows="4"
-            placeholder="Describe the apartment, features, neighborhood, and what makes it special..."
-            required
-          ></textarea>
-        </div>
-        
+
         <div className="form-row">
           <div className="form-group">
-            <label>Neighborhood & Address *</label>
-            <input
-              type="text"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              placeholder="Manhattan, New York"
-              required
-            />
+            <label>Property Type *</label>
+            <select name="propertyType" value={formData.propertyType} onChange={handleChange} required>
+              {kenyanPropertyTypes.map(type => (
+                <option key={type} value={type}>
+                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="form-group">
             <label>Lease Term</label>
@@ -164,6 +194,49 @@ const PropertyForm = ({ property = null, onSuccess }) => {
               <option value="24 months">24 Months</option>
               <option value="Flexible">Flexible</option>
             </select>
+          </div>
+        </div>
+        
+        <div className="form-group">
+          <label>Description *</label>
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            rows="4"
+            placeholder="Describe the property, nearby amenities like shopping malls, schools, hospitals, and public transport access..."
+            required
+          ></textarea>
+        </div>
+        
+        <div className="form-row">
+          <div className="form-group">
+            <label>Location & Neighborhood *</label>
+            <input
+              type="text"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              placeholder="Westlands, Nairobi"
+              list="neighborhoods"
+              required
+            />
+            <datalist id="neighborhoods">
+              {popularNeighborhoods.map(area => (
+                <option key={area} value={area} />
+              ))}
+            </datalist>
+          </div>
+          <div className="form-group">
+            <label>Area (sq ft) *</label>
+            <input
+              type="number"
+              name="area"
+              value={formData.area}
+              onChange={handleChange}
+              placeholder="800"
+              required
+            />
           </div>
         </div>
         
@@ -188,34 +261,23 @@ const PropertyForm = ({ property = null, onSuccess }) => {
               <option value="3">3+ Bathrooms</option>
             </select>
           </div>
-          <div className="form-group">
-            <label>Area (sq ft) *</label>
-            <input
-              type="number"
-              name="area"
-              value={formData.area}
-              onChange={handleChange}
-              placeholder="1200"
-              required
-            />
-          </div>
         </div>
 
         <div className="form-group">
-          <label>Security Deposit</label>
+          <label>Security Deposit (KSh)</label>
           <input
-            type="text"
+            type="number"
             name="deposit"
             value={formData.deposit}
             onChange={handleChange}
-            placeholder="€2,500"
+            placeholder="45000"
           />
         </div>
 
         <div className="form-group">
-          <label>Apartment Amenities</label>
+          <label>Property Amenities</label>
           <div className="amenities-checkboxes">
-            {apartmentAmenities.map(amenity => (
+            {kenyanApartmentAmenities.map(amenity => (
               <label key={amenity} className="checkbox-label">
                 <input
                   type="checkbox"
@@ -229,7 +291,7 @@ const PropertyForm = ({ property = null, onSuccess }) => {
         </div>
         
         <button type="submit" className="btn btn-primary" disabled={loading}>
-          {loading ? 'Saving...' : (property ? 'Update Apartment' : 'List Apartment')}
+          {loading ? 'Saving...' : (property ? 'Update Property' : 'List Property for Rent')}
         </button>
       </form>
     </div>

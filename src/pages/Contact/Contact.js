@@ -36,7 +36,7 @@ const Contact = () => {
             <h2>Get In Touch</h2>
             <div className="contact-item">
               <h3>📧 Email</h3>
-              <p>info@renthomes.com</p>
+              <p>info@mtaaspace.com</p>
             </div>
             <div className="contact-item">
               <h3>📞 Phone</h3>

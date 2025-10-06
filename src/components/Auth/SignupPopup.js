@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom'; // 👈 ADD THIS
+import { useAuth } from '../../context/AuthContext'; // ← FIXED IMPORT PATH
+import { useNavigate } from 'react-router-dom';
 import './AuthPopup.css';
 
 const SignupPopup = ({ isOpen, onClose, onSwitchToLogin }) => {
   const { signup } = useAuth();
-  const navigate = useNavigate(); // 👈 ADD THIS
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -20,6 +20,9 @@ const SignupPopup = ({ isOpen, onClose, onSwitchToLogin }) => {
     e.preventDefault();
     setError('');
     
+    console.log('🔄 === SIGNUP STARTED ===');
+    console.log('📝 Form data:', { ...formData, password: '***' });
+
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -32,35 +35,45 @@ const SignupPopup = ({ isOpen, onClose, onSwitchToLogin }) => {
 
     setLoading(true);
     
-    const result = await signup({
-      name: formData.name,
-      email: formData.email,
-      password: formData.password,
-      type: formData.userType
-    });
-    
-    if (result.success) {
-      onClose();
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        userType: 'renter'
+    try {
+      console.log('📤 Calling signup function from AuthContext...');
+      
+      const result = await signup({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.userType,
+        phone: ''
       });
       
-      // 👇 ADD NAVIGATION BASED ON USER TYPE
-      if (formData.userType === 'agent') {
-        navigate('/agent/dashboard');
+      console.log('📨 Signup result:', result);
+      
+      if (result.success) {
+        console.log('✅ Signup successful!');
+        onClose();
+        setFormData({
+          name: '',
+          email: '',
+          password: '',
+          confirmPassword: '',
+          userType: 'renter'
+        });
+        
+        if (formData.userType === 'agent') {
+          navigate('/agent/dashboard');
+        } else {
+          navigate('/dashboard');
+        }
       } else {
-        navigate('/dashboard');
+        console.error('❌ Signup failed:', result.error);
+        setError(result.error || 'Signup failed');
       }
-    } else {
-      setError(result.error);
+    } catch (error) {
+      console.error('💥 Signup error:', error);
+      setError(error.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   const handleChange = (e) => {
