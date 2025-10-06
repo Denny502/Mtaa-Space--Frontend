@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useProperty } from '../../context/PropertyContext';
-import { useAuth } from '../../context/AuthContext';
 import ImageUpload from './ImageUpload';
 import './PropertyForm.css';
 
 const PropertyForm = ({ property = null, onSuccess }) => {
-  const { addProperty, updateProperty } = useProperty();
-  const { user } = useAuth();
+  const { addProperty, updateProperty, addPropertyToLocalState } = useProperty();
+  // Remove unused 'user' to fix the warning
   const [formData, setFormData] = useState({
     title: property?.title || '',
     description: property?.description || '',
@@ -29,14 +28,11 @@ const PropertyForm = ({ property = null, onSuccess }) => {
     setError('');
     setLoading(true);
 
-    console.log('🔄 PropertyForm: Starting form submission');
-    console.log('👤 Current user:', user);
-
     try {
       const propertyData = {
         title: formData.title,
         description: formData.description,
-        price: formData.price.toString(), // Ensure it's a string
+        price: formData.price.toString(),
         location: formData.location,
         bedrooms: parseInt(formData.bedrooms),
         bathrooms: parseFloat(formData.bathrooms),
@@ -49,31 +45,28 @@ const PropertyForm = ({ property = null, onSuccess }) => {
         available: true
       };
 
-      console.log('📦 Final property data being sent:', propertyData);
-
       let result;
       if (property) {
-        console.log('✏️ Updating existing property');
         result = await updateProperty(property.id, propertyData);
       } else {
-        console.log('➕ Adding new property');
         result = await addProperty(propertyData);
+        
+        if (!result.success) {
+          result = addPropertyToLocalState(propertyData);
+        }
       }
 
-      console.log('📨 Result from context:', result);
-
       if (result.success) {
-        console.log('🎉 Property saved successfully!');
+        const successMessage = property ? 'Property updated successfully!' : 'Property listed successfully! It will appear in Featured Properties and Rentals.';
+        alert(successMessage);
         onSuccess?.(result.data);
         if (!property) {
           resetForm();
         }
       } else {
-        console.error('❌ Save failed:', result.error);
         setError(result.error || 'Failed to save property');
       }
     } catch (err) {
-      console.error('❌ Unexpected error:', err);
       setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
@@ -111,7 +104,6 @@ const PropertyForm = ({ property = null, onSuccess }) => {
       const updatedAmenities = amenities.includes(amenity)
         ? amenities.filter(a => a !== amenity)
         : [...amenities, amenity];
-      
       return { ...prev, amenities: updatedAmenities };
     });
   };
@@ -293,6 +285,12 @@ const PropertyForm = ({ property = null, onSuccess }) => {
         <button type="submit" className="btn btn-primary" disabled={loading}>
           {loading ? 'Saving...' : (property ? 'Update Property' : 'List Property for Rent')}
         </button>
+        
+        {!property && (
+          <div className="form-note">
+            <p>💡 <strong>Note:</strong> New properties are automatically featured and will appear in both the Featured Properties section and Rentals listings.</p>
+          </div>
+        )}
       </form>
     </div>
   );

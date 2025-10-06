@@ -9,7 +9,7 @@ import './PropertyDetail.css';
 const PropertyDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getPropertyById } = useProperty();
+  const { getPropertyById, properties, propertiesLoaded } = useProperty(); // Removed unused fetchProperties
   const { user, isAuthenticated } = useAuth();
   const { sendInquiry } = useContact();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
@@ -28,25 +28,69 @@ const PropertyDetail = () => {
   const [contactSuccess, setContactSuccess] = useState(false);
 
   useEffect(() => {
-    const fetchProperty = async () => {
-      try {
-        const foundProperty = getPropertyById(id);
-        if (foundProperty) {
-          setProperty(foundProperty);
-          setContactFormData(prev => ({
-            ...prev,
-            message: `I'm interested in ${foundProperty.title} at ${foundProperty.location}`
-          }));
-        }
-      } catch (error) {
-        console.error('Error fetching property:', error);
-      } finally {
+    const loadProperty = () => {
+      console.log('🔄 PropertyDetail: Starting to load property ID:', id);
+      console.log('📊 Properties loaded in context:', propertiesLoaded);
+      console.log('📦 Properties count:', properties.length);
+      
+      if (!propertiesLoaded) {
+        console.log('⏳ Properties not loaded yet, waiting...');
+        // If properties aren't loaded, wait and try again
+        setTimeout(loadProperty, 100);
+        return;
+      }
+      
+      const foundProperty = getPropertyById(id);
+      
+      if (foundProperty) {
+        console.log('✅ Property FOUND in context:', foundProperty.title);
+        setProperty(foundProperty);
+        setContactFormData(prev => ({
+          ...prev,
+          message: `I'm interested in ${foundProperty.title} at ${foundProperty.location}`
+        }));
         setLoading(false);
+      } else {
+        console.log('❌ Property NOT FOUND in context, trying API...');
+        // Try to fetch from API directly as fallback
+        fetch(`/api/properties/${id}`)
+          .then(response => {
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Property not found');
+          })
+          .then(data => {
+            const apiProperty = data.data || data;
+            if (apiProperty) {
+              console.log('✅ Property loaded from API:', apiProperty.title);
+              setProperty(apiProperty);
+              setContactFormData(prev => ({
+                ...prev,
+                message: `I'm interested in ${apiProperty.title} at ${apiProperty.location}`
+              }));
+            } else {
+              console.log('❌ Property not found in API either');
+              setProperty(null);
+            }
+          })
+          .catch(error => {
+            console.error('❌ API fetch failed:', error);
+            setProperty(null);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
       }
     };
 
-    fetchProperty();
-  }, [id, getPropertyById]);
+    if (id) {
+      loadProperty();
+    } else {
+      setLoading(false);
+      setProperty(null);
+    }
+  }, [id, getPropertyById, propertiesLoaded, properties.length]);
 
   useEffect(() => {
     if (user && property) {
@@ -66,9 +110,9 @@ const PropertyDetail = () => {
     try {
       await sendInquiry({
         ...contactFormData,
-        propertyId: property.id,
+        propertyId: property._id || property.id,
         propertyTitle: property.title,
-        agentId: property.agent?.id,
+        agentId: property.agent?._id || property.agent?.id,
         agentName: property.agent?.name
       });
       
@@ -91,8 +135,9 @@ const PropertyDetail = () => {
       return;
     }
 
-    if (isFavorite(property.id)) {
-      removeFromFavorites(property.id);
+    const propertyId = property._id || property.id;
+    if (isFavorite(propertyId)) {
+      removeFromFavorites(propertyId);
     } else {
       addToFavorites(property);
     }
@@ -109,17 +154,6 @@ const PropertyDetail = () => {
       ...prev,
       message: `I would like to schedule a tour for ${property.title} at ${property.location}. Please let me know available times.`
     }));
-  };
-
-  const getPropertyTypeDisplay = () => {
-    if (property.isStudio) return 'Studio';
-    if (property.isBedsitter) return 'Bedsitter';
-    return property.type;
-  };
-
-  const getBedroomDisplay = () => {
-    if (property.isStudio || property.isBedsitter) return 'Self-contained';
-    return `${property.bedrooms} ${property.bedrooms === 1 ? 'bedroom' : 'bedrooms'}`;
   };
 
   if (loading) {
@@ -181,11 +215,6 @@ const PropertyDetail = () => {
               >
                 {favorite ? '❤️' : '🤍'}
               </button>
-              {(property.isStudio || property.isBedsitter) && (
-                <div className="property-type-badge">
-                  {property.isStudio ? 'STUDIO' : 'BEDSITTER'}
-                </div>
-              )}
             </div>
             
             {property.images.length > 1 && (
@@ -214,11 +243,10 @@ const PropertyDetail = () => {
             <div className="property-header">
               <h1>{property.title}</h1>
               <p className="property-location">📍 {property.location}</p>
-              <p className="property-price">KSh {property.price.toLocaleString()}{property.rentPeriod === 'daily' ? '/day' : '/month'}</p>
+              <p className="property-price">KSh {typeof property.price === 'number' ? property.price.toLocaleString() : property.price}/month</p>
               <div className="property-badges">
                 {property.featured && <span className="featured-badge">Featured</span>}
-                {property.isStudio && <span className="studio-badge">Studio</span>}
-                {property.isBedsitter && <span className="bedsitter-badge">Bedsitter</span>}
+                <span className="type-badge">{property.type}</span>
               </div>
             </div>
 
@@ -227,15 +255,22 @@ const PropertyDetail = () => {
               <div className="feature-card">
                 <span className="feature-icon">🏠</span>
                 <div className="feature-info">
-                  <strong>{getPropertyTypeDisplay()}</strong>
+                  <strong>{property.type}</strong>
                   <span>Property Type</span>
                 </div>
               </div>
               <div className="feature-card">
                 <span className="feature-icon">🛏️</span>
                 <div className="feature-info">
-                  <strong>{getBedroomDisplay()}</strong>
-                  <span>Accommodation</span>
+                  <strong>{property.bedrooms} {property.bedrooms === 1 ? 'bedroom' : 'bedrooms'}</strong>
+                  <span>Bedrooms</span>
+                </div>
+              </div>
+              <div className="feature-card">
+                <span className="feature-icon">🚿</span>
+                <div className="feature-info">
+                  <strong>{property.bathrooms} {property.bathrooms === 1 ? 'bathroom' : 'bathrooms'}</strong>
+                  <span>Bathrooms</span>
                 </div>
               </div>
               <div className="feature-card">
@@ -243,13 +278,6 @@ const PropertyDetail = () => {
                 <div className="feature-info">
                   <strong>{property.area} sq ft</strong>
                   <span>Area</span>
-                </div>
-              </div>
-              <div className="feature-card">
-                <span className="feature-icon">📍</span>
-                <div className="feature-info">
-                  <strong>{property.neighborhood || property.location.split(',')[0]}</strong>
-                  <span>Neighborhood</span>
                 </div>
               </div>
             </div>
@@ -274,44 +302,6 @@ const PropertyDetail = () => {
               </div>
             )}
 
-            {/* Additional Features for Studios and Bedsitters */}
-            {(property.isStudio || property.isBedsitter) && (
-              <div className="special-features">
-                <h3>Included Features</h3>
-                <div className="features-list">
-                  <div className="feature-item">✅ Self-contained unit</div>
-                  <div className="feature-item">✅ Kitchen area</div>
-                  <div className="feature-item">✅ Sleeping area</div>
-                  <div className="feature-item">✅ Private bathroom</div>
-                  {property.hasBalcony && <div className="feature-item">✅ Balcony</div>}
-                  {property.hasParking && <div className="feature-item">✅ Parking space</div>}
-                  {property.hasSecurity && <div className="feature-item">✅ 24/7 Security</div>}
-                </div>
-              </div>
-            )}
-
-            {/* Agent Information */}
-            {property.agent && (
-              <div className="agent-info">
-                <h3>Listing Agent</h3>
-                <div className="agent-card">
-                  <img 
-                    src={property.agent.image} 
-                    alt={property.agent.name}
-                    onError={(e) => {
-                      e.target.src = 'https://via.placeholder.com/80x80/667eea/white?text=Agent';
-                    }}
-                  />
-                  <div className="agent-details">
-                    <h4>{property.agent.name}</h4>
-                    <p>📧 {property.agent.email}</p>
-                    <p>📞 {property.agent.phone}</p>
-                    <p className="agent-rating">⭐ {property.agent.rating || '4.5'} ({(property.agent.reviews || 12)} reviews)</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {/* Action Buttons */}
             <div className="property-actions">
               <button 
@@ -332,22 +322,6 @@ const PropertyDetail = () => {
               >
                 {favorite ? '❤️ Remove Favorite' : '💾 Save Property'}
               </button>
-            </div>
-
-            {/* Property Stats */}
-            <div className="property-stats">
-              <div className="stat-item">
-                <strong>{property.views || 156}</strong>
-                <span>Views</span>
-              </div>
-              <div className="stat-item">
-                <strong>{property.saves || 23}</strong>
-                <span>Saves</span>
-              </div>
-              <div className="stat-item">
-                <strong>{property.daysListed || 5}</strong>
-                <span>Days Listed</span>
-              </div>
             </div>
           </div>
         </div>

@@ -27,13 +27,13 @@ export const FavoritesProvider = ({ children }) => {
   };
 
   const removeFromFavorites = (propertyId) => {
-    const newFavorites = favorites.filter(fav => fav.id !== propertyId);
+    const newFavorites = favorites.filter(fav => (fav._id || fav.id) !== propertyId);
     setFavorites(newFavorites);
     localStorage.setItem('favorites', JSON.stringify(newFavorites));
   };
 
   const isFavorite = (propertyId) => {
-    return favorites.some(fav => fav.id === propertyId);
+    return favorites.some(fav => (fav._id || fav.id) === propertyId);
   };
 
   const value = {

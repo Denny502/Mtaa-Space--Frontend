@@ -9,10 +9,13 @@ const PropertyCard = ({ property }) => {
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const { isAuthenticated } = useAuth();
   
-  const favorite = isFavorite(property.id);
+  const favorite = isFavorite(property._id || property.id);
 
   const handleViewDetails = () => {
-    navigate(`/property/${property.id}`);
+    const propertyId = property._id || property.id;
+    console.log('🔍 PropertyCard: Navigating to property with ID:', propertyId);
+    console.log('🔍 PropertyCard: Full property object:', property);
+    navigate(`/property/${propertyId}`);
   };
 
   const handleFavoriteClick = (e) => {
@@ -23,8 +26,9 @@ const PropertyCard = ({ property }) => {
       return;
     }
 
+    const propertyId = property._id || property.id;
     if (favorite) {
-      removeFromFavorites(property.id);
+      removeFromFavorites(propertyId);
     } else {
       addToFavorites(property);
     }
